@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>VolleyStat iPad</title>
+<style>
+:root{--bg:#07111e;--panel:#102239;--line:#2b4058;--text:#eef5ff;--muted:#9db0c6;--green:#38d6a4;--red:#ef5961;--blue:#18314f;--yellow:#ffd64f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input{font:inherit}button{cursor:pointer;border:0;color:var(--text)}
+header{position:sticky;top:0;z-index:30;background:#0b1726;border-bottom:1px solid var(--line);padding:9px 14px;display:flex;align-items:center;gap:10px}
+.brand{font-size:20px;font-weight:900;margin-right:auto}.teamname{width:240px;padding:9px;border-radius:9px;border:1px solid var(--line);background:#091725;color:#fff}
+.topbtn{padding:10px 14px;border-radius:10px;background:#17304b;font-weight:900}.reset{background:var(--red)!important}
+nav{display:flex;background:#0b1726;border-bottom:1px solid var(--line);position:sticky;top:58px;z-index:29}
+nav button{flex:1;min-width:145px;padding:14px 10px;background:transparent;border-right:1px solid var(--line);font-weight:900;color:#9eb1c7}
+nav button.active{background:var(--blue);color:#fff}
+main{padding:12px;max-width:1900px;margin:auto}.screen{display:none}.screen.active{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+.title{display:flex;align-items:center;justify-content:space-between;gap:12px}.title h2{margin:0}
+.setbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+.setpill{background:var(--yellow);color:#101a25;border-radius:9px;padding:9px 14px;font-weight:900}
+.actionbtn{padding:11px 16px;border-radius:9px;background:#203954;font-weight:900}.close{background:#17614e}.danger{background:#613039}
+.small{font-size:11px;color:var(--muted)}.help{color:var(--muted);font-size:12px;margin-top:10px}
+.dataGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.skillCard{background:#0d1d2f;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.skillHead{padding:10px 12px;font-size:17px;font-weight:900}.serve{background:#0d5b43}.receive{background:#123c69}.attack{background:#3d225e}
+.tableWrap{overflow:auto}.stats{width:100%;border-collapse:collapse;min-width:760px}
+.stats th,.stats td{border-bottom:1px solid var(--line);padding:3px;text-align:center}.stats th{background:#152c46}
+.playerName{width:105px;padding:5px;border-radius:7px;border:1px solid var(--line);background:#091725;color:#fff;font-size:11px}
+.stats th:first-child,.stats td:first-child{position:sticky;left:0;z-index:2;text-align:left;background:#102239}
+.actions{display:flex;align-items:center;justify-content:center;gap:2px}.actions button{width:22px;height:22px;border-radius:5px;padding:0;font-weight:900;font-size:12px}
+.minus{background:#613039}.plus{background:#17614e}.count{min-width:16px;font-weight:900;font-size:12px}
+.teamrow{font-weight:900}.teamrow td{background:#17314a!important}.ef{color:#dfe7ef}.pos{color:var(--green)}.err{color:#ff737a}
+.chartGrid{display:grid;grid-template-columns:1fr;gap:12px}.chart{background:#0d1d2f;border:1px solid var(--line);border-radius:12px;padding:12px}
+.chart h2{text-align:center;color:var(--yellow);margin:0 0 10px}.legend{text-align:center;font-weight:800;margin-bottom:7px}.legend span{margin:0 7px}
+.bars{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;align-items:end;height:260px;border-bottom:1px solid #617187}
+.barcol{height:100%;display:flex;align-items:end;justify-content:center;gap:2px}.bar{width:9px;min-height:1px;border-radius:4px 4px 0 0}.b-ef{background:#dfe7ef}.b-pos{background:#2ed39d}.b-err{background:#ed5b62}
+.xlabel{text-align:center;font-size:10px;margin-top:4px}.teamCharts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.teamChart{background:#0d1d2f;border:1px solid var(--line);border-radius:12px;padding:12px}
+.teamChart h2{text-align:center;color:var(--yellow);margin:0 0 12px}.bigbars{height:280px;display:flex;align-items:end;justify-content:center;gap:15px;border-bottom:1px solid #617187}
+.bigcol{width:25%;display:flex;justify-content:center}.bigbar{width:100%;max-width:80px;border-radius:7px 7px 0 0;position:relative}.bigbar span{position:absolute;top:-22px;left:0;right:0;text-align:center;font-weight:900}
+.subtabs{display:flex;gap:8px;margin:10px 0;overflow:auto}.subtabs button{padding:10px 15px;border-radius:9px;background:#203954;font-weight:900}.subtabs .active{background:var(--green);color:#062018}
+.summaryWrap{overflow:auto;border:1px solid var(--line);border-radius:12px}.summaryTable{width:100%;border-collapse:collapse;min-width:650px}.summaryTable th,.summaryTable td{padding:8px;border-bottom:1px solid var(--line);text-align:center}.summaryTable th{background:#152c46}.left{text-align:left!important}
+.summarySet{margin-bottom:12px}.summarySet h3{margin:0;padding:9px 11px;background:#0d1d2f;color:var(--yellow)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.notice{padding:10px 12px;background:#0d1d2f;border:1px solid var(--line);border-radius:10px;color:var(--muted);font-size:12px}
+@media(max-width:1100px){.dataGrid{grid-template-columns:1fr}.teamCharts{grid-template-columns:1fr}.teamname{width:180px}}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">🏐 VolleyStat <span style="color:#ffd64f">iPad</span></div>
+<input id="teamName" class="teamname" value="Club Italia">
+<button class="topbtn" onclick="exportMatch()">EXPORTAR</button>
+<button class="topbtn reset" onclick="newMatch()">NUEVO PARTIDO</button>
+</header>
+
+<nav id="mainNav">
+<button class="active" onclick="showScreen('data',this)">DATOS</button>
+<button onclick="showScreen('players',this)">GRÁFICOS JUGADORAS</button>
+<button onclick="showScreen('team',this)">GRÁFICO EQUIPO</button>
+<button onclick="showScreen('match',this)">PARTIDO</button>
+</nav>
+
+<main>
+<section id="data" class="screen active">
+<div class="card">
+<div class="title"><h2>📊 Estadística — Set <span id="setNo">1</span></h2><div class="small">14 jugadoras · + suma · − resta</div></div>
+<div class="setbar"><span class="small" id="setStatus">Set 1 en curso</span><span style="margin-left:auto"></span>
+<button class="actionbtn close" onclick="closeSet()">CERRAR SET</button>
+<button class="actionbtn" onclick="showScreen('match',document.querySelectorAll('#mainNav button')[3])">VER PARTIDO</button>
+</div></div>
+
+<div class="card">
+<div id="dataGrid" class="dataGrid"></div>
+<div class="help">Una sola pestaña DATOS con SAQUE + RECEPCIÓN + ATAQUE. Cada valoración tiene − para corregir y + para sumar.</div>
+</div>
+</section>
+
+<section id="players" class="screen">
+<div class="card"><h2 style="margin:0">GRÁFICOS JUGADORAS</h2></div>
+<div id="playerCharts" class="chartGrid"></div>
+</section>
+
+<section id="team" class="screen">
+<div class="card"><h2 style="margin:0">GRÁFICO EQUIPO</h2></div>
+<div id="teamCharts" class="teamCharts"></div>
+</section>
+
+<section id="match" class="screen">
+<div class="card">
+<div class="title"><h2>📋 PARTIDO — SET POR SET Y TOTAL</h2></div>
+<div class="subtabs">
+<button id="teamView" class="active" onclick="setMatchView('team')">EQUIPO</button>
+<button id="playerView" onclick="setMatchView('players')">JUGADORAS</button>
+</div>
+<div id="matchContent"></div>
+<div class="toolbar"><button class="actionbtn close" onclick="saveHistory()">GUARDAR PARTIDO</button><button class="actionbtn" onclick="exportMatch()">EXPORTAR / COMPARTIR</button></div>
+</div>
+<div class="notice">Cada set cerrado queda guardado. El total del partido suma los sets cerrados. Guardar en HISTORIAL evita perder el partido al crear uno nuevo.</div>
+<div class="card"><h3 style="margin-top:0">HISTORIAL</h3><div id="history"></div></div>
+</section>
+</main>
+
+<script>
+const skills=['Saque','Recepción','Ataque'];
+const defs={
+'Saque':[['=','Error'],['-','Neutro'],['+','Neutro'],['/','Neutro'],['!','Pos'],['#','Pos']],
+'Recepción':[['=','Error'],['/','Error'],['-','Neutro'],['!','Neutro'],['+','Pos'],['#','Pos']],
+'Ataque':[['=','Error'],['/','Error'],['-','Neutro'],['!','Neutro'],['+','Neutro'],['#','Pos']]
+};
+
+const emptySet=()=>({players:Array.from({length:14},(_,i)=>blank(i))});
+function blank(i){let stats={};skills.forEach(k=>{stats[k]={};defs[k].forEach(([s])=>stats[k][s]=0)});return{name:'JUGADORA '+(i+1),stats};}
+
+let state=loadState();
+function loadState(){try{let s=JSON.parse(localStorage.getItem('volleystat_ipad_final')||'null');return s||{name:'Club Italia',currentSet:1,current:emptySet(),sets:[null,null,null,null,null],view:'team'};}catch(e){return{name:'Club Italia',currentSet:1,current:emptySet(),sets:[null,null,null,null,null],view:'team'}}}
+function save(){localStorage.setItem('volleystat_ipad_final',JSON.stringify(state))}
+function esc(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+
+function calc(p,k){let total=0,pos=0,err=0,s=p.stats[k];defs[k].forEach(([sym,type])=>{let n=s[sym]||0;total+=n;if(type==='Pos')pos+=n;if(type==='Error')err+=n});return{total,pos,err,ef:total?(pos-err)/total*100:0,posPct:total?pos/total*100:0,errPct:total?err/total*100:0,s}}
+function aggregate(set,k){let a={};defs[k].forEach(([s])=>a[s]=0);set.players.forEach(p=>defs[k].forEach(([s])=>a[s]+=p.stats[k][s]||0));return calc({stats:{[k]:a}},k)}
+
+function change(i,k,sym,d){let v=state.current.players[i].stats[k][sym]||0;state.current.players[i].stats[k][sym]=Math.max(0,v+d);save();renderData()}
+function action(i,k,sym){let n=state.current.players[i].stats[k][sym]||0;return '<div class="actions"><button class="minus" onclick="change('+i+',\''+k+'\',\''+sym+'\',-1)">−</button><span class="count">'+n+'</span><button class="plus" onclick="change('+i+',\''+k+'\',\''+sym+'\',1)">+</button></div>'}
+
+function skillBlock(k){
+let d=defs[k], rows=state.current.players.map((p,i)=>{let c=calc(p,k);return '<tr><td><input class="playerName" value="'+esc(p.name)+'" onchange="renamePlayer('+i+',this.value)"></td>'+
+d.map(([s])=>'<td>'+action(i,k,s)+'</td>').join('')+
+'<td>'+c.total+'</td><td class="ef">'+c.ef.toFixed(1)+'%</td><td class="pos">'+c.posPct.toFixed(1)+'%</td><td class="err">'+c.errPct.toFixed(1)+'%</td></tr>'}).join('');
+let c=aggregate(state.current,k);
+let head=d.map(([s])=>'<th>'+s+'</th>').join('');
+let team=d.map(([s])=>'<td>'+c.s[s]+'</td>').join('');
+let cls=k==='Saque'?'serve':k==='Recepción'?'receive':'attack';
+return '<div class="skillCard"><div class="skillHead '+cls+'">'+k.toUpperCase()+'</div><div class="tableWrap"><table class="stats"><thead><tr><th>JUGADORA</th>'+head+'<th>T</th><th>Ef %</th><th>Pos %</th><th>Err %</th></tr></thead><tbody>'+rows+'<tr class="teamrow"><td>EQUIPO</td>'+team+'<td>'+c.total+'</td><td class="ef">'+c.ef.toFixed(1)+'%</td><td class="pos">'+c.posPct.toFixed(1)+'%</td><td class="err">'+c.errPct.toFixed(1)+'%</td></tr></tbody></table></div></div>'
+}
+function renamePlayer(i,v){state.current.players[i].name=v||('JUGADORA '+(i+1));save();renderData()}
+
+function renderData(){
+document.getElementById('teamName').value=state.name;
+document.getElementById('setNo').textContent=state.currentSet;
+document.getElementById('setStatus').textContent='Set '+state.currentSet+' en curso';
+document.getElementById('dataGrid').innerHTML=skills.map(skillBlock).join('');
+}
+
+function closeSet(){
+if(!confirm('¿Cerrar el Set '+state.currentSet+'? Los datos quedarán guardados y comenzará el siguiente set.'))return;
+state.sets[state.currentSet-1]=JSON.parse(JSON.stringify(state.current));
+if(state.currentSet<5){state.currentSet++;state.current=emptySet();save();render();return}
+save();render();alert('Set 5 cerrado. Partido completo.')
+}
+
+function playerChart(k){
+let cols=state.current.players.map((p,i)=>{let c=calc(p,k);return '<div><div class="barcol"><div class="bar b-ef" style="height:'+Math.max(1,c.ef)*2.3+'px"></div><div class="bar b-pos" style="height:'+Math.max(1,c.posPct)*2.3+'px"></div><div class="bar b-err" style="height:'+Math.max(1,c.errPct)*2.3+'px"></div></div><div class="xlabel">'+(i+1)+'</div></div>'}).join('');
+return '<div class="chart"><h2>'+k+'</h2><div class="legend">▮ Ef &nbsp; <span style="color:#2ed39d">▮ Pos %</span> &nbsp; <span style="color:#ed5b62">▮ Err</span></div><div class="bars">'+cols+'</div></div>'
+}
+function teamChart(k){
+let c=aggregate(state.current,k);
+return '<div class="teamChart"><h2>'+k+'</h2><div class="legend">Ef &nbsp; Pos % &nbsp; Err</div><div class="bigbars">'+
+'<div class="bigcol"><div class="bigbar" style="height:'+Math.max(1,c.ef)*2.7+'px;background:#dfe7ef;color:#182333"><span>'+c.ef.toFixed(1)+'%</span></div></div>'+
+'<div class="bigcol"><div class="bigbar" style="height:'+Math.max(1,c.posPct)*2.7+'px;background:#2ed39d"><span>'+c.posPct.toFixed(1)+'%</span></div></div>'+
+'<div class="bigcol"><div class="bigbar" style="height:'+Math.max(1,c.errPct)*2.7+'px;background:#ed5b62"><span>'+c.errPct.toFixed(1)+'%</span></div></div></div></div>'
+}
+function renderCharts(){document.getElementById('playerCharts').innerHTML=skills.map(playerChart).join('');document.getElementById('teamCharts').innerHTML=skills.map(teamChart).join('')}
+
+function summaryRow(k,c){return '<tr><td class="left">'+k+'</td><td>'+c.total+'</td><td>'+c.ef.toFixed(1)+'%</td><td class="pos">'+c.posPct.toFixed(1)+'%</td><td class="err">'+c.errPct.toFixed(1)+'%</td></tr>'}
+function combined(){let c=emptySet();state.sets.filter(Boolean).forEach(set=>set.players.forEach((p,i)=>skills.forEach(k=>defs[k].forEach(([s])=>c.players[i].stats[k][s]+=p.stats[k][s]||0))));return c}
+
+function renderTeamMatch(){
+let html='';
+for(let i=0;i<5;i++){let set=state.sets[i];html+='<div class="summarySet"><h3>SET '+(i+1)+(set?'':' — sin cerrar')+'</h3><div class="summaryWrap"><table class="summaryTable"><thead><tr><th>FUNDAMENTO</th><th>TOTAL</th><th>EF %</th><th>POS %</th><th>ERR %</th></tr></thead><tbody>'+skills.map(k=>summaryRow(k,set?aggregate(set,k):{total:0,ef:0,posPct:0,errPct:0})).join('')+'</tbody></table></div></div>'}
+let c=combined();html+='<div class="summarySet"><h3 style="color:#fff">TOTAL PARTIDO</h3><div class="summaryWrap"><table class="summaryTable"><thead><tr><th>FUNDAMENTO</th><th>TOTAL</th><th>EF %</th><th>POS %</th><th>ERR %</th></tr></thead><tbody>'+skills.map(k=>summaryRow(k,aggregate(c,k))).join('')+'</tbody></table></div></div>';
+document.getElementById('matchContent').innerHTML=html
+}
+function renderPlayerMatch(){
+let html='';
+for(let i=0;i<5;i++){let set=state.sets[i];html+='<div class="summarySet"><h3>SET '+(i+1)+(set?'':' — sin cerrar')+'</h3><div class="summaryWrap"><table class="summaryTable"><thead><tr><th>JUGADORA</th><th>FUNDAMENTO</th><th>TOTAL</th><th>EF %</th><th>POS %</th><th>ERR %</th></tr></thead><tbody>';
+if(set)set.players.forEach(p=>skills.forEach((k,j)=>{let c=calc(p,k);html+='<tr>'+(j===0?'<td class="left" rowspan="3">'+esc(p.name)+'</td>':'')+'<td>'+k+'</td><td>'+c.total+'</td><td>'+c.ef.toFixed(1)+'%</td><td class="pos">'+c.posPct.toFixed(1)+'%</td><td class="err">'+c.errPct.toFixed(1)+'%</td></tr>'}));
+else html+='<tr><td colspan="6">Set aún no cerrado.</td></tr>';
+html+='</tbody></table></div></div>'}
+let c=combined();html+='<div class="summarySet"><h3 style="color:#fff">TOTAL PARTIDO</h3><div class="summaryWrap"><table class="summaryTable"><thead><tr><th>JUGADORA</th><th>FUNDAMENTO</th><th>TOTAL</th><th>EF %</th><th>POS %</th><th>ERR %</th></tr></thead><tbody>';
+c.players.forEach(p=>skills.forEach((k,j)=>{let x=calc(p,k);html+='<tr>'+(j===0?'<td class="left" rowspan="3">'+esc(p.name)+'</td>':'')+'<td>'+k+'</td><td>'+x.total+'</td><td>'+x.ef.toFixed(1)+'%</td><td class="pos">'+x.posPct.toFixed(1)+'%</td><td class="err">'+x.errPct.toFixed(1)+'%</td></tr>'}));
+html+='</tbody></table></div></div>';document.getElementById('matchContent').innerHTML=html
+}
+function renderMatch(){document.getElementById('teamView').classList.toggle('active',state.view!=='players');document.getElementById('playerView').classList.toggle('active',state.view==='players');state.view==='players'?renderPlayerMatch():renderTeamMatch();renderHistory()}
+function setMatchView(v){state.view=v;save();renderMatch()}
+
+function showScreen(id,btn){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('#mainNav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');render()}
+function renderHistory(){let h=[];try{h=JSON.parse(localStorage.getItem('volleystat_history')||'[]')}catch(e){}document.getElementById('history').innerHTML=h.length?h.map((m,i)=>'<div style="padding:9px;border-bottom:1px solid var(--line)"><b>'+esc(m.name)+'</b> · '+m.date+' <button class="actionbtn" style="float:right;padding:5px 9px" onclick="loadHistory('+i+')">ABRIR</button></div>').join(''):'<span class="small">No hay partidos guardados todavía.</span>'}
+function saveHistory(){let h=[];try{h=JSON.parse(localStorage.getItem('volleystat_history')||'[]')}catch(e){}h.unshift({name:state.name,date:new Date().toLocaleString('es-IT'),state:JSON.parse(JSON.stringify(state))});localStorage.setItem('volleystat_history',JSON.stringify(h));renderHistory();alert('Partido guardado.')}
+function loadHistory(i){let h=JSON.parse(localStorage.getItem('volleystat_history')||'[]');if(!h[i])return;if(confirm('¿Abrir este partido?')){state=h[i].state;save();render()}}
+function exportMatch(){let data={equipo:state.name,sets:state.sets.map((s,i)=>s?{set:i+1,data:s}:null)};let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(state.name||'VolleyStat')+'_partido.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function newMatch(){if(!confirm('¿Crear un nuevo partido? El historial guardado no se borrará.'))return;state={name:state.name||'Club Italia',currentSet:1,current:emptySet(),sets:[null,null,null,null,null],view:'team'};save();render();showScreen('data',document.querySelector('#mainNav button'))}
+
+document.getElementById('teamName').addEventListener('change',()=>{state.name=document.getElementById('teamName').value||'Club Italia';save()});
+function render(){renderData();renderCharts();if(document.getElementById('match').classList.contains('active'))renderMatch();else renderHistory()}
+render();
+</script>
+</body>
+</html>
