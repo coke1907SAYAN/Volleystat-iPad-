@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>VolleyStat</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{-webkit-text-size-adjust:100%;touch-action:manipulation}body{touch-action:manipulation}
+body{margin:0;background:#f5f6f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+button,input{font:inherit;touch-action:manipulation}
+header{background:#fff;border-bottom:1px solid #e3e6eb;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.logo{font-size:28px;font-weight:900;letter-spacing:-1.5px;color:#182235}.logo span{color:#f3b400}
+.actions{display:flex;gap:10px}.action{height:46px;padding:0 22px;border-radius:10px;background:#fff;font-weight:800;border:2px solid}.reset{color:#1769d1;border-color:#1769d1}.save{color:#15943b;border-color:#15943b}
+.tabs{display:grid;grid-template-columns:220px 220px;justify-content:center;gap:8px;padding:14px;background:#fff}
+.tab{height:52px;border:1px solid #d6dbe2;border-radius:10px;background:#fff;font-weight:900;font-size:18px}.tab.active{background:#1465d8;color:#fff;border-color:#1465d8}
+main{max-width:1180px;margin:auto;padding:0 18px 22px}
+.entry{background:#fff;border:1px solid #e0e4e9;border-radius:12px;padding:18px;margin-bottom:14px}
+.entryTop{display:grid;grid-template-columns:150px repeat(6,1fr);gap:12px;align-items:center}
+.esbox{text-align:center}.es{width:78px;height:78px;border-radius:50%;border:3px solid #1769d1;background:#fff;font-weight:900;font-size:20px;color:#111}.eslabel{font-weight:800;margin-top:7px;font-size:14px}.escount{font-size:28px;font-weight:900;color:#1769d1;margin-top:2px}
+.rating{height:110px;border-radius:11px;color:#fff;font-size:52px;font-weight:900;position:relative;border:1px solid #0002;box-shadow:0 2px 4px #0001}.rating small{position:absolute;right:10px;bottom:6px;font-size:18px;color:#111;font-weight:900}.r0{background:#ef4444}.r1,.r2,.r3{background:#f59b08}.r4{background:#79c52a}.r5{background:#21a83d}
+.players{display:flex;gap:12px;margin-top:14px;overflow-x:auto;padding-bottom:2px}.playerWrap{min-width:145px;flex:1}.player{height:48px;width:100%;border:1px solid #d6dbe2;border-radius:10px;background:#fff;color:#1769d1;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.player.selected{border:2px solid #1769d1;background:#eef5ff}.playerInner{position:relative;height:100%;display:flex;align-items:center;justify-content:center;padding:0 30px 0 8px}.editNameBtn{position:absolute;right:4px;top:4px;width:26px;height:26px;border:0;border-radius:6px;background:#eef5ff;color:#1769d1;font-size:15px;font-weight:900;padding:0}.player.selected .editNameBtn{background:#dceaff}
+.add{border:2px dashed #1769d1;color:#1769d1;background:#fff;font-weight:900;height:48px;min-width:145px;border-radius:10px}
+.help{display:none}
+.stats{background:#fff;border:1px solid #e0e4e9;border-radius:12px;overflow:hidden}.statsTitle{padding:12px 16px;font-weight:900;border-bottom:1px solid #e0e4e9}
+table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;text-align:center;border-bottom:1px solid #e4e7eb}th:first-child,td:first-child{text-align:left;padding-left:16px}th{font-size:14px}td{font-size:16px;font-weight:700}.pos{color:#329b25}.neg{color:#e33}.metric{color:#f09300}.team td{font-weight:900;background:#eef5ff}
+.footer{margin-top:14px;background:#fff;border:1px solid #e0e4e9;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:35px}.set{font-weight:800}.set b{display:block;color:#1769d1;font-size:28px}.teams{display:flex;border:1px solid #bfc6d0;border-radius:8px;overflow:hidden}.teamBtn{padding:10px 28px;background:#fff;border:0;font-weight:900}.teamBtn.active{background:#1769d1;color:#fff}.clear{margin-left:auto;border:2px solid #e33;color:#e33;background:#fff;border-radius:9px;padding:11px 20px;font-weight:900}.savedBox{margin-top:14px;background:#fff;border:1px solid #e0e4e9;border-radius:12px;padding:12px 16px}.savedTitle{font-weight:900;margin-bottom:8px}.savedList{display:flex;gap:8px;flex-wrap:wrap}.savedItem{border:1px solid #1769d1;color:#1769d1;background:#fff;border-radius:8px;padding:8px 12px;font-weight:800;display:inline-flex;align-items:center;gap:7px}.deleteSaved{width:26px;height:26px;border:0;border-radius:6px;background:#fff0f0;color:#e33;font-size:14px;font-weight:900;padding:0;line-height:26px}
+@media(max-width:760px){
+ header{padding:10px 12px}.logo{font-size:22px}.action{padding:0 12px;height:40px}.tabs{grid-template-columns:1fr 1fr}.tab{font-size:16px}
+ main{padding:0 8px 16px}.entry{padding:10px}.entryTop{grid-template-columns:78px repeat(6,minmax(54px,1fr));gap:5px}.rating{height:78px;font-size:38px}.rating small{font-size:13px;right:5px}.es{width:64px;height:64px;font-size:17px}.eslabel{font-size:11px}.escount{font-size:22px}
+ .players{gap:6px}.playerWrap,.add{min-width:105px}.player{height:42px;font-size:12px}.add{height:42px}
+ .footer{gap:12px;padding:10px;flex-wrap:wrap}.clear{margin-left:0}
+}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">VOLLEY<span>STAT</span></div>
+ <div class="actions"><button class="action reset" onclick="resetAll()">↻ &nbsp; RESET</button><button class="action save" onclick="saveAll()">▣ &nbsp; GUARDAR</button></div>
+</header>
+<div class="tabs"><button id="recTab" class="tab active" onclick="switchFund('rec')">◉ &nbsp; RECEPCIÓN</button><button id="atqTab" class="tab" onclick="switchFund('atq')">⚡ &nbsp; ATAQUE</button></div>
+<main>
+ <section class="entry">
+  <div class="entryTop">
+   <div class="esbox"><button class="es" onclick="addES()">E.S.</button><div class="eslabel">ERROR DE SAQUE</div><div id="esCount" class="escount">0</div></div>
+   <button class="rating r0" onclick="rate(0)">=<small id="c0">0</small></button>
+   <button class="rating r1" onclick="rate(1)">−<small id="c1">0</small></button>
+   <button class="rating r2" onclick="rate(2)">/<small id="c2">0</small></button>
+   <button class="rating r3" onclick="rate(3)">!<small id="c3">0</small></button>
+   <button class="rating r4" onclick="rate(4)">+<small id="c4">0</small></button>
+   <button class="rating r5" onclick="rate(5)">#<small id="c5">0</small></button>
+  </div>
+  <div id="players" class="players"></div>
+ </section>
+ <section class="stats">
+  <div id="statsTitle" class="statsTitle">ESTADÍSTICAS — RECEPCIÓN · EQUIPO A</div>
+  <table><thead><tr><th>JUGADORA</th><th>TOTAL<br>Σ</th><th id="metricHead">EFICIENCIA<br>%</th><th>POSITIVO<br><span class="pos">(+)</span></th><th>NEGATIVO<br><span class="neg">(−)</span></th></tr></thead><tbody id="body"></tbody></table>
+ </section>
+ <section class="footer">
+  <div class="set">SET <select id="setSelect" onchange="changeSet(this.value)"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+  <div><strong>EQUIPO</strong><div class="teams"><button id="teamA" class="teamBtn active" onclick="setTeam('A')">Equipo A</button><button id="teamB" class="teamBtn" onclick="setTeam('B')">Equipo B</button></div></div>
+  <button class="clear" onclick="clearCurrent()">♜ &nbsp; LIMPIAR DATOS</button>
+ </section><section class="savedBox"><div class="savedTitle">PARTIDOS GUARDADOS</div><div id="savedList" class="savedList"></div></section>
+</main>
+<script>
+const key="volleystat_v4"; const savedKey="volleystat_guardados_v1";
+const syms=["=","−","/","!","+","#"];
+let fund="rec",team="A",selected=null,setNo=1;
+function blank(){return {name:"",v:[0,0,0,0,0,0]}}
+function fresh(){return {rec:{A:{players:[blank()],es:0},B:{players:[blank()],es:0}},atq:{A:{players:[blank()],es:0},B:{players:[blank()],es:0}}}}
+let data=JSON.parse(localStorage.getItem(key)||"null")||fresh();
+function cur(){return data[fund][team]}
+function saveAll(){
+  const defaultName=`${fund==="rec"?"Recepción":"Ataque"} ${setNo} Set`;
+  const name=prompt("Nombre para guardar:",defaultName);
+  if(name===null || !name.trim()) return;
+  const saved=JSON.parse(localStorage.getItem(savedKey)||"[]");
+  saved.unshift({id:Date.now(),name:name.trim(),fund,team,setNo,data:JSON.parse(JSON.stringify(data[fund][team])),savedAt:new Date().toLocaleString()});
+  localStorage.setItem(savedKey,JSON.stringify(saved));
+  renderSaved();
+  alert(`Guardado como "${name.trim()}". Queda guardado en este iPad/navegador.`);
+}
+function resetAll(){if(confirm("¿RESET TOTAL? Se borrarán nombres, valoraciones y errores de saque de ambos equipos y fundamentos.")){data=fresh();selected=null;localStorage.setItem(key,JSON.stringify(data));render()}}
+function switchFund(f){fund=f;selected=null;switchFundUI();render()}
+function setTeam(t){team=t;selected=null;document.getElementById("teamA").classList.toggle("active",t==="A");document.getElementById("teamB").classList.toggle("active",t==="B");render()}
+function changeSet(n){setNo=Number(n);render()}
+function addES(){cur().es++;render()}
+function addPlayer(){
+ const p=blank(); cur().players.push(p); selected=cur().players.length-1; render();
+ const n=prompt("Nombre de la jugadora:","");
+ if(n!==null && n.trim()){p.name=n.trim();localStorage.setItem(key,JSON.stringify(data));render()}
+}
+function selectPlayer(i){selected=i;render()}
+function editName(i){
+  const p=cur().players[i], n=prompt("Nombre de la jugadora:",p.name||"");
+  if(n!==null){p.name=n.trim();localStorage.setItem(key,JSON.stringify(data));render()}
+}
+function rate(k){if(selected===null){alert("Primero selecciona una jugadora.");return}cur().players[selected].v[k]++;render()}
+function clearCurrent(){if(confirm("¿Limpiar los datos de este equipo? Se borrarán valoraciones y errores de saque, pero se conservarán los nombres.")){cur().players.forEach(p=>p.v=[0,0,0,0,0,0]);cur().es=0;selected=null;localStorage.setItem(key,JSON.stringify(data));render()}}
+function stat(p){let total=p.v.reduce((a,b)=>a+b,0),pos,neg;if(fund==="rec"){pos=p.v[4]+p.v[5];neg=p.v[0]+p.v[2]}else{pos=p.v[5];neg=p.v[0]+p.v[2]}let value=fund==="rec"?((pos-neg)/total*100||0):((pos/total*100)||0);return{total,pos,neg,value}}
+function renderSaved(){
+ const box=document.getElementById("savedList"); if(!box) return;
+ const saved=JSON.parse(localStorage.getItem(savedKey)||"[]"); box.innerHTML="";
+ saved.slice(0,12).forEach(s=>{
+   const b=document.createElement("button"); b.className="savedItem";
+   const label=document.createElement("span"); label.textContent=s.name;
+   const del=document.createElement("button"); del.type="button"; del.className="deleteSaved"; del.textContent="🗑";
+   del.title="Eliminar sesión"; del.onclick=(e)=>{e.stopPropagation();deleteSaved(s.id)};
+   b.appendChild(label); b.appendChild(del);
+   b.onclick=()=>loadSaved(s.id); box.appendChild(b);
+ });
+ if(!saved.length){const span=document.createElement("span");span.textContent="No hay partidos guardados todavía.";span.style.color="#687386";box.appendChild(span)}
+}
+function deleteSaved(id){
+ const saved=JSON.parse(localStorage.getItem(savedKey)||"[]");
+ const s=saved.find(x=>x.id===id); if(!s) return;
+ if(!confirm(`¿Eliminar "${s.name}"?`)) return;
+ localStorage.setItem(savedKey,JSON.stringify(saved.filter(x=>x.id!==id)));
+ renderSaved();
+}
+function loadSaved(id){
+ const saved=JSON.parse(localStorage.getItem(savedKey)||"[]"); const s=saved.find(x=>x.id===id); if(!s) return;
+ if(!confirm(`¿Cargar "${s.name}"? Los datos actuales de este equipo/fundamento serán reemplazados.`)) return;
+ data[s.fund][s.team]=JSON.parse(JSON.stringify(s.data)); fund=s.fund; team=s.team; setNo=s.setNo||1; selected=null;
+ document.getElementById("setSelect").value=String(setNo); switchFundUI(); render();
+}
+function switchFundUI(){
+ document.getElementById("recTab").classList.toggle("active",fund==="rec");
+ document.getElementById("atqTab").classList.toggle("active",fund==="atq");
+ document.getElementById("teamA").classList.toggle("active",team==="A");
+ document.getElementById("teamB").classList.toggle("active",team==="B");
+}
+function render(){
+ const c=cur(),ps=document.getElementById("players");ps.innerHTML=""; document.getElementById("setSelect").value=String(setNo);
+ c.players.forEach((p,i)=>{
+  let w=document.createElement("div"); w.className="playerWrap";
+  let b=document.createElement("button"); b.className="player"+(selected===i?" selected":"");
+  b.onclick=()=>selectPlayer(i);
+  let inner=document.createElement("span"); inner.className="playerInner";
+  let name=document.createElement("span"); name.textContent=p.name||`JUGADORA ${i+1}`;
+  let edit=document.createElement("button"); edit.className="editNameBtn"; edit.type="button"; edit.textContent="✎";
+  edit.onclick=(e)=>{e.stopPropagation();editName(i)};
+  inner.appendChild(name); inner.appendChild(edit); b.appendChild(inner); w.appendChild(b); ps.appendChild(w);
+});
+ let add=document.createElement("button");add.className="add";add.textContent="+ AGREGAR JUGADORA";add.onclick=addPlayer;ps.appendChild(add);
+ for(let k=0;k<6;k++)document.getElementById("c"+k).textContent=selected===null?0:c.players[selected].v[k];
+ document.getElementById("esCount").textContent=c.es;
+ document.getElementById("statsTitle").textContent=`ESTADÍSTICAS — ${fund==="rec"?"RECEPCIÓN":"ATAQUE"} · EQUIPO ${team}`;
+ document.getElementById("metricHead").innerHTML=fund==="rec"?"EFICIENCIA<br>%":"EFICACIA<br>%";
+ let body=document.getElementById("body");body.innerHTML="";let T={total:0,pos:0,neg:0};
+ c.players.forEach((p,i)=>{let s=stat(p);T.total+=s.total;T.pos+=s.pos;T.neg+=s.neg;let tr=document.createElement("tr");tr.innerHTML=`<td>${i+1}. ${p.name||"—"}</td><td>${s.total}</td><td class="metric">${s.value.toFixed(0)}%</td><td class="pos">${s.pos}</td><td class="neg">${s.neg}</td>`;body.appendChild(tr)});
+ let tv=T.total?(fund==="rec"?(T.pos-T.neg):T.pos)/T.total*100:0;let tr=document.createElement("tr");tr.className="team";tr.innerHTML=`<td>TOTAL DEL EQUIPO</td><td>${T.total}</td><td class="metric">${tv.toFixed(0)}%</td><td class="pos">${T.pos}</td><td class="neg">${T.neg}</td>`;body.appendChild(tr)
+}
+render();
+</script>
+</body></html>
